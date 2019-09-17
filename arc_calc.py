@@ -18,16 +18,6 @@ class CircleArc:
 
         self._results = kwargs
 
-        while len(self._results) < 5:
-            for func in [
-                self._angle,
-                self._chord,
-                self._length,
-                self._radius,
-                self._sagitta
-            ]:
-                func()
-
     def _angle(self):
         if self._results.get('angle') is not None:
             return
@@ -107,6 +97,22 @@ class CircleArc:
                 radius ** 2 - (chord / 2) ** 2
             )
 
-    @property
-    def results(self):
+    def calc(self):
+        while len(self._results) < 5:
+            for func in [
+                self._angle,
+                self._chord,
+                self._length,
+                self._radius,
+                self._sagitta
+            ]:
+                func()
+
+        if self._results['sagitta'] > self._results['radius']:
+            self._results['angle'] = (math.pi * 2) - self._results['angle']
+            self._results['length'] = (
+                (math.pi * 2 * self._results['radius'])  - self._results['length']
+            )
+
         return {k: round(v, 4) for k, v in self._results.items()}
+
